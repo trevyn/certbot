@@ -1,0 +1,13 @@
+[package]
+authors = ["trevyn <trevyn-git@protonmail.com>"]
+description = "A library that calls out to `certbot` to get a TLS certificate."
+documentation = "https://docs.rs/certbot"
+edition = "2021"
+license = "MIT OR Apache-2.0 OR CC0-1.0"
+name = "certbot"
+readme = "README.md"
+repository = "https://github.com/trevyn/certbot"
+rust-version = "1.56"
+version = "0.1.0"
+
+[dependencies]

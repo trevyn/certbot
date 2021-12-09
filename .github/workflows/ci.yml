@@ -1,0 +1,45 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+  schedule: [cron: '40 1 * * *']
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  check:
+    name: test rust ${{ matrix.rust }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        rust: [1.56, stable, beta, nightly]
+#              1.56 is minimum rust-version
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: hecrj/setup-rust-action@v1
+        with:
+          rust-version: ${{ matrix.rust }}
+      
+      - run: cargo check
+
+      - run: cargo doc --no-deps
+
+  publish:
+    needs: [check]
+    runs-on: ubuntu-latest
+    if: ${{ contains(github.event.head_commit.message, 'certbot@') && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: hecrj/setup-rust-action@v1
+        with:
+          rust-version: stable
+
+      - name: cargo publish certbot
+        run: cargo publish --token ${{ secrets.CARGO_TOKEN }}
